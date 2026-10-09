@@ -23,7 +23,7 @@ Los datos originales, junto con una explicación de cada columna, se pueden enco
 
 El conjunto de datos contiene **una tabla con 9,994 registros y 19 columnas**
 
-![superstore](./picture/Muestra_tabla_superstore.png)
+![superstore](./Picture/Muestra_tabla_superstore.png)
 
 ## Tareas (Task)
 
