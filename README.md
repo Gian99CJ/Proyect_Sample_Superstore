@@ -52,7 +52,41 @@ Antes de realizar el análisis, es fundamental asegurar que los datos estén lim
 
 #### Creación de la tabla limpia
 
-Creé una tabla nueva **superstore** a partir de la tabla original **sample_superstore**, que se conserva intacta como respaldo. Estandaricé los nombres de columnas y convertí las fechas a tipo **DATE** para cada fecha se intenta el formato **MM-dd-yyyy** si no aplica se intenta **M/d/yyyy**, y **COALESCE** conserva el que funcionó.
+Creé una tabla nueva **superstore** a partir de la tabla original **sample_superstore**, que se conserva intacta como respaldo. Estandaricé los nombres de columnas y convertí las fechas a tipo **DATE** para cada fecha se modifico el formato a **MM-dd-yyyy** si no aplica se intenta **M/d/yyyy**, y **COALESCE** conserva el que funcionó.
+
+```sql
+-- Mi primera consulta --
+select *
+from bd_sample_store.default.sample_superstore
+--Se estandarizan los nombres de columnas (sin espacios ni guiones) y se crea una nueva tabla dennominada "superstore"
+
+--Creacion de la tabla
+create or replace table bd_sample_store.default.superstore as
+select
+`Row ID` as Row_ID,	
+`Order ID` as Order_ID,
+coalesce(try_to_date(`Order Date`,'MM-dd-yyyy'),
+try_to_date(`Order Date`, 'M/d/yyyy')) as Order_Date,
+coalesce(try_to_date(`Ship Date`,'MM-dd-yyyy'),
+try_to_date(`Ship Date`, 'M/d/yyyy')) as Ship_Date,
+`Ship Mode` as Ship_Mode,
+`Customer ID` as Customer_ID,
+Segment, 
+Country,
+City,
+State, 
+Region,
+`Product ID` as Product_ID,
+Category,
+`Sub-Category` as Sub_Category,
+`Product Name` as Product_Name,
+Sales,
+Quantity,
+Discount,
+Profit	
+
+from bd_sample_store.default.sample_superstore
+```
 
 ![superstore1](./Picture/tabla_superstore.png)
  ![superstore2](./Picture/tabla_superstore_2tablas.png)
