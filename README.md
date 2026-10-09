@@ -2,7 +2,7 @@
 
 ## Resumen (Overview)
 La gerencia comercial de **Superstore**, una cadena retail de artículos de oficina, muebles y tecnología en Estados Unidos, desea aumentar sus ventas y su rentabilidad. Sin embargo, no tiene claro qué productos, regiones y políticas de descuento están generando utilidad y cuáles la están destruyendo. Mi objetivo es utilizar **SQL** dentro de **Databricks** para analizar sus datos transaccionales de 2014 a 2017 y proporcionar recomendaciones basadas en datos al área comercial.
-## 📩 Si quieres aprender SQL Conéctate conmigo
+## 📩 Si quieres contactarme
 
 <p align="center">
   <a href="https://www.linkedin.com/in/gian-ruiz-lopez-644867197/?isSelfProfile=true">
@@ -92,5 +92,47 @@ from bd_sample_store.default.sample_superstore
  ![superstore2](./Picture/tabla_superstore_2tablas.png)
 
 
+## Análisis Exploratorio de Datos (EDA) e Insights
+
+### Pregunta #1 ¿Cuáles son las ventas totales, la utilidad total, el margen, el número de pedidos y el número de clientes?
+
+Para hallar los principales KPIs, utilice funciones de agregacion como SUM,COUNT Y DISTINCT para saber cuanto vendio, cual fue su utilidad, cuantos clientes tuvo y cuantos pedidos tuvo. Además, use FORMAT_NUMBER para darle formato a los resultados.
+
+```sql
+select
+format_number(sum(Sales),2) as Ventas_Totales,
+format_number(sum(Profit),2) as Utilidad_Total,
+format_number(sum(Profit)/sum(Sales)*100,2) as Margen,
+format_number(count(distinct Order_ID),0) as Numero_Pedidos,
+format_number(count(distinct Customer_ID),0) as Total_Clientes
+
+from bd_sample_store.default.superstore ;
+```
+
+![image](./Picture/Picture_1.png)
+
+Entre el 2014 y 2017 Superstore, vendio USD 2.3 millones, tuvo una utilidad de USD 286 mil, con un margen de 12.47%. Atendio 5,009 pedidos de 793 clientes.
+
+El Margen es positivo, pero hay que entender si por categoria o descuento quien puede afectar el margen.
+
+### Pregunta #2  ¿Cuánto vende y cuánto gana cada categoría, qué margen tiene y qué porcentaje de las ventas totales representa?
+
+Para encontrar la participacion por categoria, he agrupado por CATEGORY  y usé la   WINDOW  FUNCTION  SUM(SUM(Sales)) OVER y  el SUM para la suma de ventas de cada categoría y el SUM ... OVER () externo para sumar totales de todas las categorías, lo que permite obtener el porcentaje de participación en la misma consulta.
 
 
+```sql
+
+select 
+    Category,
+    format_number(sum(Sales),2) as Ventas,
+    format_number(sum(Profit),2) as Utilidad,
+    format_number(sum(Profit)/sum(Sales)*100,2) as Margen,
+    format_number(sum(Sales)/sum(sum(Sales)) over()*100,2) as Porcentaje_Ventas
+
+from bd_sample_store.default.superstore
+group by Category
+
+order by Ventas desc ;
+```
+
+![image](./Picture/Picture_2.png)
