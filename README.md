@@ -58,4 +58,5 @@ Creé una tabla nueva **superstore** a partir de la tabla original **sample_supe
  ![superstore2](./Picture/tabla_superstore_2tablas.png)
 
 
- 
+
+
