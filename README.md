@@ -42,4 +42,20 @@ En este análisis, ayudo al departamento de RR.HH. a responder lo siguiente:
  11. **Ranking regional:** ¿Cuáles son las 3 subcategorías más vendidas en cada región?
  12. **Pareto de clientes:** ¿Qué porcentaje de clientes genera el 80% de las ventas?
 
+
+## Limpieza de Datos
+
+Antes de realizar el análisis, es fundamental asegurar que los datos estén limpios y listos. Al revisar la tabla cargada en Databricks encontré dos problemas:
+
+1. **Nombres de columnas con espacios y guiones** (`Order Date`, `Sub-Category`), que obligan a usar backticks en cada consulta 
+2. **Fechas guardadas como texto y con dos formatos mezclados**: unas filas vienen como `11-08-2016` (MM-dd-yyyy) y otras como `6/16/2016` (M/d/yyyy).
+
+#### Creación de la tabla limpia
+
+Creé una tabla nueva **superstore** a partir de la tabla original **sample_superstore**, que se conserva intacta como respaldo. Estandaricé los nombres de columnas y convertí las fechas a tipo **DATE** para cada fecha se intenta el formato **MM-dd-yyyy** si no aplica se intenta **M/d/yyyy**, y **COALESCE** conserva el que funcionó.
+
+![superstore1](./Picture/tabla_superstore.png)
+ ![superstore2](./Picture/tabla_superstore_2tablas.png)
+
+
  
