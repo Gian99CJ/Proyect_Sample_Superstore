@@ -216,7 +216,30 @@ order by sum(Profit) ASC ;
  -Se recomienda limitar los descuentos en Tables y Bookcases, ademas hay que revisar a Supplies sus costos porque su descuento el promedio de descuento es inferior a las otras categorias.
 
 
- 
+### Pregunta 6 ¿Cómo cambia el margen según el rango de descuento aplicado? 
+
+Primero necesito saber cuales son los valores unicos de descuento, para eso hice un SELECT DISTINCT y ORDER BY.
+
+```sql
+SELECT DISTINCT Discount
+FROM bd_sample_store.default.superstore
+ORDER BY Discount ASC ;
+```
+
+ Veo que el rango de descuentos va de (0 a 0.8)
+
+ ![image](./Picture/Picture_6.1.png)
+
+
+Es necesaria la conversion  en rangos de negocio y ordenarlos de forma lógica.
+
+En una CTE (WITH rangos AS) clasifiqué cada línea de venta en un rango con CASE WHEN. Le puse un número delante a cada rango ("1.", "2.", ...) para que el ORDER BY los muestre en orden lógico y no alfabético. Luego calculé el margen y, con otro CASE WHEN dentro de SUM, el porcentaje de líneas que terminaron con pérdida.
+
+
+
+
+
+
 
 
 
