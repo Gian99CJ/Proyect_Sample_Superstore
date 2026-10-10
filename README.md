@@ -147,7 +147,7 @@ Forniture es es el principal problema de rentabilidad del negocio. Se recomienda
 
 ### Pregunta #3  ¿Qué región genera más ventas y cuál es la más rentable?
 
- Esto lo soluciones con Agrupar por REGION y aplicar dos WINDOW FUNCTIONS  RANK() OVER (ORDER BY ...), una ordena por ventas y la otra por margen. Así, en una sola tabla se ve si la región que más vende es también la más rentable.
+ Esto lo solucions con Agrupar por REGION y aplicar dos WINDOW FUNCTIONS  RANK() OVER (ORDER BY ...), una ordena por ventas y la otra por margen. Así, en una sola tabla se ve si la región que más vende es también la más rentable.
 
 ```sql
 
@@ -269,6 +269,71 @@ ORDER BY Rango_Descuento;
 Cuando no hay descuento en las ventas, el margen  es de 29.51%, cuando hay un descueto hasta del 20%, el margen es de 11.91%, pero cuando el descuento pasa de ese rango del 20%, el margen se vuelve negativo, en el rango 3, se vendio USD 234 mil pero el margen fue negativo.
 
 Se recomienda que exista un tope de descuento del 20% para que la utilidad no sea negativa.
+
+
+### Pregunta 7 ¿Cómo cambia el margen según el rango de descuento aplicado? 
+
+En una CTE con `SELECT DISTINCT` dejé un registro por pedido y calculé los días de envío con `DATEDIFF(Shi_Date, Order_Date)` (esto funciona gracias a que en la limpieza convertí las fechas a tipo `DATE`). Luego usé `AVG`, `MIN` y `MAX`, y un `CASE WHEN` para marcar los pedidos lentos (más de 5 días).
+
+
+```sql
+with pedidos as (
+    select distinct
+    Order_ID,
+    Ship_Mode,
+    DATEDIFF(Ship_Date, Order_Date) as Dias_de_envio
+    from bd_sample_store.default.superstore
+)
+
+select Ship_Mode,
+    round(avg(Dias_de_envio),2) as Dias_promedio,
+    round(min(Dias_de_envio),2) as Minimo,
+    round(max(Dias_de_envio),2) as Maximo,
+    count(*) as Total_pedidos,
+    round(count(*) * 100.0 / sum(count(*)) over(), 2) as Porcentaje_Pedidos
+from pedidos
+group by Ship_Mode
+order by Dias_promedio asc ;
+```
+
+![image](./Picture/Picture_7.png)
+
+Veo que  Same Day se despacha en promedio el mismo día y First Class en 2.2 días. Standard Class concentra el 60% de los pedidos (2,994 de 5,009), tarda 5 días en promedio.
+
+Se recomienda  reducir el tiempo de entrega en Standard Class, ya que tendría el mayor impacto en la experiencia del cliente. También se puede comunicar mejor la diferencia de tiempos para incentivar el uso de Second Class.
+
+### Pregunta 8 ¿Cuál es el ticket promedio por pedido en cada segmento de cliente?
+
+En una CTE sumé las ventas y la utilidad de cada pedido (`GROUP BY Order_ID, Segment`). Luego promedié esos totales por segmento con `AVG` y calculé la participación de cada segmento con la window function `SUM(SUM(...)) OVER ()`.
+
+```sql
+with pedido as (
+    select 
+    Order_ID,
+    Customer_ID,
+    Segment,
+    sum(Sales) as Total_Ventas,
+    sum(Profit) as Total_Utilidad
+    from bd_sample_store.default.superstore
+    group by Order_ID, Customer_ID, Segment
+)
+
+select Segment,
+    count(*) as Cantidad_pedidos,
+    format_number(sum(Total_Ventas),0) as Ventas,
+    format_number(avg(Total_Ventas),0) as Ticket_Promedio,
+    format_number(avg(Total_Utilidad),0) as Total_Utilidad_Promedio_Pedido,
+    concat(format_number(sum(Total_Ventas)/sum(sum(Total_Ventas)) over()*100,1),' %') as Participacion
+from pedido
+group by Segment
+order by Ticket_Promedio desc
+```
+
+![image](./Picture/Picture_8.png)
+
+
+
+
 
 
 
