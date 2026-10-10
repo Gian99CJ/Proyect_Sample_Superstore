@@ -23,6 +23,12 @@ Los datos originales, junto con una explicación de cada columna, se pueden enco
 
 El conjunto de datos contiene **una tabla con 9,994 registros y 19 columnas**
 
+```sql
+ Mi primera consulta
+select *
+from bd_sample_store.default.sample_superstore
+```
+
 ![superstore](./Picture/Muestra_tabla_superstore.png)
 
 ## Tareas (Task)
@@ -39,8 +45,7 @@ En este análisis,. a responder lo siguiente:
  8. **Segmentos:** ¿Cuál es el ticket promedio por pedido en cada segmento de cliente?
  9. **Crecimiento anual:** ¿Cuál es el crecimiento de las ventas y la utilidad año contra año? 
  10. **Ventas acumuladas:** ¿Cómo evolucionan las ventas acumuladas mes a mes dentro de cada año?
- 11. **Ranking regional:** ¿Cuáles son las 3 subcategorías más vendidas en cada región?
- 12. **Pareto de clientes:** ¿Qué porcentaje de clientes genera el 80% de las ventas?
+
 
 
 ## Limpieza de Datos
@@ -55,9 +60,7 @@ Antes de realizar el análisis, es fundamental asegurar que los datos estén lim
 Creé una tabla nueva **superstore** a partir de la tabla original **sample_superstore**, que se conserva intacta como respaldo. Estandaricé los nombres de columnas y convertí las fechas a tipo **DATE** para cada fecha se modifico el formato a **MM-dd-yyyy** si no aplica se intenta **M/d/yyyy**, y **COALESCE** conserva el que funcionó.
 
 ```sql
--- Mi primera consulta --
-select *
-from bd_sample_store.default.sample_superstore
+
 --Se estandarizan los nombres de columnas (sin espacios ni guiones) y se crea una nueva tabla dennominada "superstore"
 
 --Creacion de la tabla
