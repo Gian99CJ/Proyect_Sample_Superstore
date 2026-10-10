@@ -271,7 +271,7 @@ Cuando no hay descuento en las ventas, el margen  es de 29.51%, cuando hay un de
 Se recomienda que exista un tope de descuento del 20% para que la utilidad no sea negativa.
 
 
-### Pregunta 7 ¿Cómo cambia el margen según el rango de descuento aplicado? 
+### Pregunta 7 ¿Cuál es el tiempo promedio de envío por modalidad de envío y qué porcentaje de pedidos tarda más de 5 días?
 
 En una CTE con `SELECT DISTINCT` dejé un registro por pedido y calculé los días de envío con `DATEDIFF(Shi_Date, Order_Date)` (esto funciona gracias a que en la limpieza convertí las fechas a tipo `DATE`). Luego usé `AVG`, `MIN` y `MAX`, y un `CASE WHEN` para marcar los pedidos lentos (más de 5 días).
 
