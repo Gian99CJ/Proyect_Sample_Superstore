@@ -27,7 +27,7 @@ El conjunto de datos contiene **una tabla con 9,994 registros y 19 columnas**
 
 ## Tareas (Task)
 
-En este análisis, ayudo al departamento de RR.HH. a responder lo siguiente:
+En este análisis,. a responder lo siguiente:
 
  1. **KPIs generales:**¿Cuáles son las ventas totales, la utilidad total, el margen, el número de pedidos y el número de clientes?
  2. **Categorías:** ¿Cuánto vende y cuánto gana cada categoría, qué margen tiene y qué porcentaje de las ventas totales representa?
