@@ -136,3 +136,93 @@ order by Ventas desc ;
 ```
 
 ![image](./Picture/Picture_2.png)
+
+Veo que la participacion de ventas de las 3 categorias estan casi a la par (36.40%, 32.30% y 31.30%), los margenes son buenos de 2 categorias como Technology 17.40% y Office Supplies 17.40%, pero la de Furniture es 2.49%. Esto significa que esta categoria necesita mayor analisis.
+
+Forniture es es el principal problema de rentabilidad del negocio. Se recomienda revisar la estrategia de precios y descuentos para esta categoría para mejorar su rentabilidad.
+
+
+### Pregunta #3  ¿Qué región genera más ventas y cuál es la más rentable?
+
+ Esto lo soluciones con Agrupar por REGION y aplicar dos WINDOW FUNCTIONS  RANK() OVER (ORDER BY ...), una ordena por ventas y la otra por margen. Así, en una sola tabla se ve si la región que más vende es también la más rentable.
+
+```sql
+
+SELECT
+    Region,
+    format_number(sum(Sales),2) as Ventas,
+    format_number(sum(Profit),2) as Utilidad,
+    format_number(sum(Profit)/sum(Sales)*100,2) as Margen,
+    rank() over (order by sum(Sales) desc) as RANK_Ventas,
+    rank() over (order by sum(Profit)/sum(Sales)*100 desc) as RANK_Margen
+
+
+from bd_sample_store.default.superstore 
+group by Region
+order by Ventas desc ;
+```
+
+![image](./Picture/Picture_3.png)
+
+Los resultados muestran que West es la mas vende USD 725 mil y la que mejor margen tiene en 14.94%. La region Central es la tercera en el ranking de ventas, pero es la que peor margen tiene con 7.92%. La region South es la que menos vende, pero tiene mayor margen que la region Central con 11.93%. Se recomienda que Central y South puedan adoptar las politicas comercialees de la Region West y hay que revisar los descuentos que hace la Region Central que al parecer estan impactando en la utilidad. 
+
+### Pregunta 4 ¿Cuáles son los 10 productos con más ventas y cuánta utilidad dejan?
+
+Cómo lo resolví: Agrupé por Product_ID, Product_Name y Category, ordené por ventas de mayor a menor con ORDER BY  y DESC y limité a 10 resultados con LIMIT.
+
+```sql
+SELECT Product_ID, Product_Name, Category,
+     format_number(sum(Sales),2) as Ventas,
+     format_number(sum(Quantity),2) as Cantidad,
+     format_number(sum(Profit),2) as Utilidad,
+     format_number(sum(Profit)/sum(Sales)*100,2) as Margen
+
+FROM bd_sample_store.default.superstore
+group by Product_ID, Product_Name, Category
+order by sum(sales) desc
+limit 10 ;
+```
+
+
+![image](./Picture/Picture_4.png)
+
+
+De la lista, el producto mas vendido es Canon imageCLASS con USD 61.6 mil de ventas y un margen de 40.91%. Pero existen 3 productos que generan utilidad negativa, segun el ranking es el producto numero 3, 9 y 10. Se recomienda revisar la estrategia comercial de estos 3 productos.
+
+
+### Pregunta 5 ¿Qué subcategorías tienen utilidad negativa y cuál es su descuento promedio?
+
+Aqui busque agrupar por categoría y subcategoría y usé HAVING SUM(Profit) < 0, que filtra los grupos después de agregarlos (a diferencia de WHERE, que filtra filas antes). Además calculé el descuento promedio con AVG(Discount).
+
+```sql
+
+SELECT Category, Sub_Category,
+     format_number(sum(Sales),2) as Ventas,
+     format_number(sum(Profit),2) as Utilidad,
+     format_number(sum(Profit)/sum(Sales)*100,2) as Margen,
+     format_number(avg(Discount)*100,2) as Descuento_Promedio
+
+FROM bd_sample_store.default.superstore
+group by Category, Sub_Category
+HAVING SUM(Profit) < 0
+order by sum(Profit) ASC ;
+```
+
+![image](./Picture/Picture_5.png)
+
+ La subcategoria Tables es la que tiene mayor uilidad negativa, pierde USD 17.7 mil y el descuento promedio es de 26.13% es el mas alto. Bookcases pierde USD 3.4 mil y el descuento promedio es de 21.11. La subcategoria que menos pierdes es Supplies.
+ 
+ 
+ -Se recomienda limitar los descuentos en Tables y Bookcases, ademas hay que revisar a Supplies sus costos porque su descuento el promedio de descuento es inferior a las otras categorias.
+
+
+ 
+
+
+
+
+
+
+
+
+
