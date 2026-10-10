@@ -330,7 +330,7 @@ order by Ticket_Promedio desc
 
 ![image](./Picture/Picture_8.png)
 
-El segmento Consumer representa casi el 51% del total de las ventas, pero tiene promedio mas bajo de ticket 449 y el promedio  mas bajo de utilidad por pedido en 52. Mientras que el segmento Home Office solo representa casi el 19% del total de las ventas, pero tiene el ticket  y la utilidad promedio mas alto de  los 3 segmentos.
+El segmento Consumer representa casi el 51% del total de las ventas, pero tiene el promedio mas bajo de ticket 449 y el promedio  mas bajo de utilidad por pedido en 52. Mientras que el segmento Home Office solo representa casi el 19% del total de las ventas, pero tiene el ticket  y la utilidad promedio mas alto de  los 3 segmentos.
 
 Entonces, el segmento Home Office tiene margen de crecimiento, ya que tiene un promedio mas alto de ventas y utilidad por pedido. Vale la pena que la Gerencia pueda dirgir campañas especificas a este segmento.
 
