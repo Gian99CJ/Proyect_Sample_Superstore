@@ -210,10 +210,10 @@ order by sum(Profit) ASC ;
 
 ![image](./Picture/Picture_5.png)
 
- La subcategoria Tables es la que tiene mayor uilidad negativa, pierde USD 17.7 mil y el descuento promedio es de 26.13% es el mas alto. Bookcases pierde USD 3.4 mil y el descuento promedio es de 21.11. La subcategoria que menos pierdes es Supplies.
+La subcategoria Tables es la que tiene mayor uilidad negativa, pierde USD 17.7 mil y el descuento promedio es de 26.13% es el mas alto. Bookcases pierde USD 3.4 mil y el descuento promedio es de 21.11. La subcategoria que menos pierdes es Supplies.
  
  
- -Se recomienda limitar los descuentos en Tables y Bookcases, ademas hay que revisar a Supplies sus costos porque su descuento el promedio de descuento es inferior a las otras categorias.
+Se recomienda limitar los descuentos en Tables y Bookcases, ademas hay que revisar a Supplies sus costos porque su descuento el promedio de descuento es inferior a las otras categorias.
 
 
 ### Pregunta 6 ¿Cómo cambia el margen según el rango de descuento aplicado? 
@@ -233,7 +233,42 @@ ORDER BY Discount ASC ;
 
 Es necesaria la conversion  en rangos de negocio y ordenarlos de forma lógica.
 
-En una CTE (WITH rangos AS) clasifiqué cada línea de venta en un rango con CASE WHEN. Le puse un número delante a cada rango ("1.", "2.", ...) para que el ORDER BY los muestre en orden lógico y no alfabético. Luego calculé el margen y, con otro CASE WHEN dentro de SUM, el porcentaje de líneas que terminaron con pérdida.
+En una CTE (WITH rangos AS) clasifiqué cada línea de venta en un rango con CASE WHEN. Le puse un número delante a cada rango ("1.", "2.", ...) para que el ORDER BY los muestre en orden lógico y no alfabético. Luego calculé el margen y un conteo de lineas para tener una referencia de los registros
+
+```sql
+WITH rangos AS (
+    SELECT 
+    CASE 
+    WHEN Discount = 0 THEN '1. Sin Descuento'
+    WHEN Discount <= 0.2 THEN '2. Hasta 20%'
+    WHEN Discount <= 0.4 THEN '3. Desde 21% hasta 40%'
+    ElSE                      '4. Más de 40%'
+    END AS Rango_Descuento,
+    Sales,
+    Profit
+FROM bd_sample_store.default.superstore
+)
+
+SELECT Rango_Descuento,
+    format_number(count(*),0) AS Lineas,
+    format_number(sum(Sales), 2) AS Ventas,
+    format_number(sum(Profit), 2) AS Utilidad,
+    format_number(sum(Profit) / sum(Sales) * 100, 2) AS Margen
+
+FROM rangos
+GROUP BY Rango_Descuento
+ORDER BY Rango_Descuento;
+
+```
+
+![image](./Picture/Picture_6.2.png)
+
+Cuando no hay descuento en las ventas, el margen  es de 29.51%, cuando hay un descueto hasta del 20%, el margen es de 11.91%, pero cuando el descuento pasa de ese rango del 20%, el margen se vuelve negativo, en el rango 3, se vendio USD 234 mil pero el margen fue negativo.
+
+Se recomienda que exista un tope de descuento del 20% para que la utilidad no sea negativa.
+
+
+
 
 
 
